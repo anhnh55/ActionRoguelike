@@ -25,6 +25,13 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 		UCameraComponent* CameraComp;
 
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<AActor> ProjectileClass;
+
+	void PrimaryAttack();
+
+	void MoveRight(float value);
+
 	void MoveForward(float value);
 
 	// Called when the game starts or when spawned
