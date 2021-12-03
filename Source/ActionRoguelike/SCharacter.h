@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -27,6 +28,11 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(VisibleAnywhere)
+		USInteractionComponent* InteractionComp;
+
+	void PrimaryInteract();
 
 	void PrimaryAttack();
 
