@@ -21,7 +21,7 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere)
 		UStaticMeshComponent* BaseMeshComp;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UStaticMeshComponent* LidMeshComp;
 
 	void Interact_Implementation(APawn* InstigatorPawn);
