@@ -23,7 +23,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 		UStaticMeshComponent* StaticMeshComp;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 		URadialForceComponent* RadialForceComp;
 
 	// declare overlap begin function

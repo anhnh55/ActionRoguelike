@@ -28,7 +28,7 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 void ASExplosiveBarrel::BeginPlay()
 {
 	Super::BeginPlay();
-	StaticMeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHitEvent);
+	//StaticMeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHitEvent);
 }
 
 void ASExplosiveBarrel::PostInitializeComponents()
@@ -36,7 +36,7 @@ void ASExplosiveBarrel::PostInitializeComponents()
 	// Don't forget to call parent function
 	Super::PostInitializeComponents();
 
-	StaticMeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHitEvent);
+	//StaticMeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHitEvent);
 }
 
 // Called every frame
@@ -47,5 +47,5 @@ void ASExplosiveBarrel::Tick(float DeltaTime)
 
 void ASExplosiveBarrel::OnHitEvent(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	RadialForceComp->FireImpulse();
+	//RadialForceComp->FireImpulse();
 }

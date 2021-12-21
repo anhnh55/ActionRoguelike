@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
@@ -34,6 +35,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 		UAnimMontage* AttackAnim;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+		USAttributeComponent* AttributeComp;
 
 	FTimerHandle TimerHandle_PrimaryAttack;
 	void PrimaryAttack_Timelapsed();
