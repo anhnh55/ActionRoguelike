@@ -24,6 +24,8 @@ ASCharacter::ASCharacter()
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>(TEXT("InteractionComp"));
 
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>(TEXT("AttributeComp"));
+
+	AttackAnimDelay = 0.2f;
 }
 
 void ASCharacter::PrimaryAttack_Timelapsed()
@@ -74,6 +76,16 @@ void ASCharacter::PrimaryAttack_Timelapsed()
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }
 
+void ASCharacter::DashAttack_Timelapsed()
+{
+	SpawnProjectile(DashProjectileClass);
+}
+
+void ASCharacter::BlackHoleAttack_Timelapsed()
+{
+	SpawnProjectile(BlackHoleProjectileClass);
+}
+
 void ASCharacter::PrimaryInteract()
 {
 	InteractionComp->PrimaryInteract();
@@ -83,9 +95,25 @@ void ASCharacter::PrimaryAttack()
 {
 	PlayAnimMontage(AttackAnim);
 
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_Timelapsed, 0.15f);
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_Timelapsed, AttackAnimDelay);
 
 	//GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
+}
+
+void ASCharacter::DashAttack()
+{
+	PlayAnimMontage(AttackAnim);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_DashAttack, this, &ASCharacter::DashAttack_Timelapsed, AttackAnimDelay);
+
+	//GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
+}
+
+void ASCharacter::BlackHoleAttack()
+{
+	PlayAnimMontage(AttackAnim);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_BlackHoleAttack, this, &ASCharacter::BlackHoleAttack_Timelapsed, AttackAnimDelay);
 }
 
 void ASCharacter::MoveRight(float value)
@@ -112,6 +140,57 @@ void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
+{
+	if (ensureAlways(ClassToSpawn))
+	{
+		FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.Instigator = this;
+
+		//cast line from camera
+
+		//Viewport Size
+		const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+
+		//Viewport Center!            
+		const FVector2D  ViewportCenter = FVector2D(ViewportSize.X / 2, ViewportSize.Y / 2);
+		FVector ReticleWorldLocation;
+		FVector ReticleWorldDirection;
+		GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(ViewportCenter.X, ViewportCenter.Y, ReticleWorldLocation, ReticleWorldDirection);
+
+		UE_LOG(LogTemp, Warning, TEXT("CenterX %f, CenterY %f,  Loc %s, Dir %s"), ViewportCenter.X, ViewportCenter.Y, *ReticleWorldLocation.ToString(), *ReticleWorldDirection.ToString());
+		//FVector TraceStart = CameraComp->GetComponentLocation();
+
+		//FVector TraceEnd = CameraComp->GetComponentLocation() + CameraComp->GetComponentRotation().Vector() * 5000.0f;
+		FVector TraceStart = ReticleWorldLocation;
+		FVector TraceEnd = ReticleWorldLocation + ReticleWorldDirection * 1000.0f;
+
+		FHitResult Hit;
+		FCollisionObjectQueryParams ObjectQueryParams;
+		ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+		ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+		ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
+		ObjectQueryParams.AddObjectTypesToQuery(ECC_PhysicsBody);
+
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(this);
+		//GetActorEyesViewPoint(CameraLocation, CameraRotation);
+		if (GetWorld()->LineTraceSingleByObjectType(Hit, TraceStart, TraceEnd, ObjectQueryParams, QueryParams))
+		{
+			TraceEnd = Hit.ImpactPoint;
+		}
+
+
+		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - HandLocation).Rotator();
+		FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
+
+		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
+	}
 }
 
 // Called every frame
@@ -147,6 +226,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ASCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("DashAttack", IE_Pressed, this, &ASCharacter::DashAttack);
+	PlayerInputComponent->BindAction("BlackHoleAttack", IE_Pressed, this, &ASCharacter::BlackHoleAttack);
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ASCharacter::PrimaryInteract);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 }

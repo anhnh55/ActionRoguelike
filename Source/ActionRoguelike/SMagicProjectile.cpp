@@ -4,32 +4,13 @@
 #include "SMagicProjectile.h"
 
 #include "SAttributeComponent.h"
-#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-	SphereComponent = CreateDefaultSubobject<USphereComponent>("SphereComp");
-	SphereComponent->SetCollisionProfileName("Projectile");
-	
-	RootComponent = SphereComponent;
-
-	EffectComp = CreateDefaultSubobject<UParticleSystemComponent>("EffectComp");
-	EffectComp->SetupAttachment(SphereComponent);
-
-	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("MovementComp");
-	MovementComponent->InitialSpeed = 1000.0f;
-	MovementComponent->bRotationFollowsVelocity = true;
-	MovementComponent->bInitialVelocityInLocalSpace = true;
-}
-
-// Called when the game starts or when spawned
-void ASMagicProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap);
+	SphereComp->SetSphereRadius(20.0f);
+	MoveComp->InitialSpeed = 2000;
+	DamageAmount = 20.0f;
 }
 
 void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -40,11 +21,17 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		USAttributeComponent* AttrComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 		if(AttrComp)
 		{
-			AttrComp->ApplyHealthChange(-20.0f);
+			AttrComp->ApplyHealthChange(-DamageAmount);
 
 			Destroy();
 		}
 	}
+}
+
+void ASMagicProjectile::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap);
 }
 
 // Called every frame

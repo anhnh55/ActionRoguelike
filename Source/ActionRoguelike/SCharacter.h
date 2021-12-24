@@ -30,6 +30,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Attack")
 		TSubclassOf<AActor> ProjectileClass;
 
+	UPROPERTY(EditAnywhere, Category="Attack")
+		TSubclassOf<AActor> DashProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+		TSubclassOf<AActor> BlackHoleProjectileClass;
+
 	UPROPERTY(VisibleAnywhere)
 		USInteractionComponent* InteractionComp;
 
@@ -39,12 +45,22 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		USAttributeComponent* AttributeComp;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Attack")
+		float AttackAnimDelay;
+
 	FTimerHandle TimerHandle_PrimaryAttack;
+	FTimerHandle TimerHandle_DashAttack;
+	FTimerHandle TimerHandle_BlackHoleAttack;
+
 	void PrimaryAttack_Timelapsed();
+	void DashAttack_Timelapsed();
+	void BlackHoleAttack_Timelapsed();
 
 	void PrimaryInteract();
 
 	void PrimaryAttack();
+	void DashAttack();
+	void BlackHoleAttack();
 
 	void MoveRight(float value);
 
@@ -52,6 +68,9 @@ protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	// Re-use spawn logic between attacks
+	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
 
 public:	
 	// Called every frame
