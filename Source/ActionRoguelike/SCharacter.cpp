@@ -159,16 +159,16 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 
 		//Viewport Center!            
 		const FVector2D  ViewportCenter = FVector2D(ViewportSize.X / 2, ViewportSize.Y / 2);
-		FVector ReticleWorldLocation;
-		FVector ReticleWorldDirection;
-		GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(ViewportCenter.X, ViewportCenter.Y, ReticleWorldLocation, ReticleWorldDirection);
+		FVector CrosshairWorldLocation;
+		FVector CrosshairWorldDirection;
+		GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(ViewportCenter.X, ViewportCenter.Y, CrosshairWorldLocation, CrosshairWorldDirection);
 
-		UE_LOG(LogTemp, Warning, TEXT("CenterX %f, CenterY %f,  Loc %s, Dir %s"), ViewportCenter.X, ViewportCenter.Y, *ReticleWorldLocation.ToString(), *ReticleWorldDirection.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("CenterX %f, CenterY %f,  Loc %s, Dir %s"), ViewportCenter.X, ViewportCenter.Y, *CrosshairWorldLocation.ToString(), *CrosshairWorldDirection.ToString());
 		//FVector TraceStart = CameraComp->GetComponentLocation();
 
 		//FVector TraceEnd = CameraComp->GetComponentLocation() + CameraComp->GetComponentRotation().Vector() * 5000.0f;
-		FVector TraceStart = ReticleWorldLocation;
-		FVector TraceEnd = ReticleWorldLocation + ReticleWorldDirection * 1000.0f;
+		FVector TraceStart = CrosshairWorldLocation;
+		FVector TraceEnd = CrosshairWorldLocation + CrosshairWorldDirection * 1000.0f;
 
 		FHitResult Hit;
 		FCollisionObjectQueryParams ObjectQueryParams;
