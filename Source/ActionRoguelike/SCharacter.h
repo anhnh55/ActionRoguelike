@@ -48,6 +48,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack")
 		float AttackAnimDelay;
 
+	UFUNCTION()
+		void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_DashAttack;
 	FTimerHandle TimerHandle_BlackHoleAttack;
@@ -72,6 +75,7 @@ protected:
 	// Re-use spawn logic between attacks
 	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
 
+	virtual void PostInitializeComponents() override;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
