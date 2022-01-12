@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 #include "SProjectileBase.generated.h"
 
 UCLASS(ABSTRACT)
@@ -24,6 +26,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 		UParticleSystem* ImpactVFX;
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+		USoundCue* ImpactSound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		USphereComponent* SphereComp;
@@ -34,6 +38,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		UParticleSystemComponent* EffectComp;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+		UAudioComponent* AudioComp;
 	// 'virtual' so we can override this in child-classes
 	UFUNCTION()
 		virtual void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);

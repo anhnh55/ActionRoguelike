@@ -57,7 +57,6 @@ void ASCharacter::PrimaryAttack_Timelapsed()
 	FVector ReticleWorldDirection;
 	GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(ViewportCenter.X, ViewportCenter.Y, ReticleWorldLocation, ReticleWorldDirection);
 
-	UE_LOG(LogTemp, Warning, TEXT("CenterX %f, CenterY %f,  Loc %s, Dir %s"), ViewportCenter.X, ViewportCenter.Y, *ReticleWorldLocation.ToString(), *ReticleWorldDirection.ToString());
 	//FVector TraceStart = CameraComp->GetComponentLocation();
 	
 	//FVector TraceEnd = CameraComp->GetComponentLocation() + CameraComp->GetComponentRotation().Vector() * 5000.0f;
