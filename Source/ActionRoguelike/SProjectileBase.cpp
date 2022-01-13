@@ -47,7 +47,6 @@ void ASProjectileBase::Explode_Implementation()
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, ImpactVFX, GetActorLocation(), GetActorRotation());
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *ImpactSound->GetDesc());
 		Destroy();
 	}
 }
@@ -55,13 +54,14 @@ void ASProjectileBase::Explode_Implementation()
 void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Projectile base actor hit explode"));
+	UE_LOG(LogTemp, Warning, TEXT("Projectile base OnActorHit"));
 	Explode();
 }
 
 void ASProjectileBase::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+	SphereComp->OnComponentHit.AddDynamic(this, &ASProjectileBase::OnActorHit);
 }
 
 // Called every frame

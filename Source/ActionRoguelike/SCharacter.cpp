@@ -26,11 +26,20 @@ ASCharacter::ASCharacter()
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>(TEXT("AttributeComp"));
 
 	AttackAnimDelay = 0.2f;
+
+	TimeToHitParamName = "TimeToHit";
 }
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
 	float Delta)
 {
+	if(Delta < 0.0f)
+	{
+		GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
+		GetMesh()->SetScalarParameterValueOnMaterials("HitFlashSpeed", HitFlashSpeed);
+		GetMesh()->SetVectorParameterValueOnMaterials("HitFlashColor", FVector(HitFlashColor));
+	}
+
 	if(NewHealth <= 0.0f && Delta < 0.0f)
 	{
 		APlayerController* PC = Cast<APlayerController>(GetController());

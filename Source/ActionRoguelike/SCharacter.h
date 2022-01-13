@@ -21,6 +21,15 @@ public:
 
 protected:
 
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+		FName TimeToHitParamName;
+
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		FColor HitFlashColor;
+
+	UPROPERTY(EditAnywhere, Category = "Effects")
+		float HitFlashSpeed;
+
 	UPROPERTY(VisibleAnywhere)
 		USpringArmComponent* SpringArmComp;
 
