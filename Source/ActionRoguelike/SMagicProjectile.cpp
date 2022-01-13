@@ -10,7 +10,7 @@ ASMagicProjectile::ASMagicProjectile()
 {
 	SphereComp->SetSphereRadius(20.0f);
 	MoveComp->InitialSpeed = 2000;
-	DamageAmount = 20.0f;
+	DamageAmount = (FMath::RandRange(10, 50)/10)*10;
 }
 
 void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
