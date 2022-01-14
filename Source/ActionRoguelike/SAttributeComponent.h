@@ -39,5 +39,10 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+		static USAttributeComponent* GetAttributes(AActor* FromActor);
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+		bool IsFullHealth() const;
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+		float GetHealthMax() const;
 };
