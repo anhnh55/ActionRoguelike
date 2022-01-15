@@ -57,6 +57,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack")
 		float AttackAnimDelay;
 
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+		FName HandSocketName;
+	/* Particle System played during attack animation */
+	UPROPERTY(EditAnywhere, Category = "Attack")
+		UParticleSystem* CastingEffect;
+
 	UFUNCTION()
 		void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
 

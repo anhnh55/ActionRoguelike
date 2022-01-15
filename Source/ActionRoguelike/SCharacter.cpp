@@ -4,6 +4,8 @@
 #include "SCharacter.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Widgets/Text/ISlateEditableTextWidget.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -28,6 +30,7 @@ ASCharacter::ASCharacter()
 	AttackAnimDelay = 0.2f;
 
 	TimeToHitParamName = "TimeToHit";
+	HandSocketName = "Muzzle_01";
 }
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
@@ -112,7 +115,7 @@ void ASCharacter::PrimaryInteract()
 void ASCharacter::PrimaryAttack()
 {
 	PlayAnimMontage(AttackAnim);
-
+	UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_Timelapsed, AttackAnimDelay);
 
 	//GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
@@ -121,7 +124,7 @@ void ASCharacter::PrimaryAttack()
 void ASCharacter::DashAttack()
 {
 	PlayAnimMontage(AttackAnim);
-
+	UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
 	GetWorldTimerManager().SetTimer(TimerHandle_DashAttack, this, &ASCharacter::DashAttack_Timelapsed, AttackAnimDelay);
 
 	//GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
@@ -130,7 +133,7 @@ void ASCharacter::DashAttack()
 void ASCharacter::BlackHoleAttack()
 {
 	PlayAnimMontage(AttackAnim);
-
+	UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
 	GetWorldTimerManager().SetTimer(TimerHandle_BlackHoleAttack, this, &ASCharacter::BlackHoleAttack_Timelapsed, AttackAnimDelay);
 }
 
