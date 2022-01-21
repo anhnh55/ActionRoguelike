@@ -17,8 +17,6 @@ public:
 	ASAICharacter();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, Category="Component")
 	UPawnSensingComponent* PawnSensingComp;
@@ -27,8 +25,5 @@ protected:
 		void OnPawnSeen(APawn* Pawn);
 
 	virtual void PostInitializeComponents() override;
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };
