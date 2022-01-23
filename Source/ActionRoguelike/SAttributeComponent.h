@@ -32,7 +32,7 @@ public:
 		bool IsAlive() const;
 
 	UFUNCTION(BlueprintCallable, Category= "Attributes")
-	bool ApplyHealthChange(float delta);
+	bool ApplyHealthChange(AActor* InstigatorActor, float delta);
 
 	UPROPERTY(BlueprintAssignable)
 		FOnHealthChanged OnHealthChanged;
@@ -41,8 +41,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		static USAttributeComponent* GetAttributes(AActor* FromActor);
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+		static bool IsActorAlive(AActor* FromActor);
+
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		bool IsFullHealth() const;
+
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		float GetHealthMax() const;
 };

@@ -57,7 +57,7 @@ void ASProjectileBase::Explode_Implementation()
 void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Projectile base OnActorHit"));
+	//UE_LOG(LogTemp, Warning, TEXT("Projectile base OnActorHit"));
 	Explode();
 }
 

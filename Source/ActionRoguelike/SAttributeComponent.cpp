@@ -31,11 +31,11 @@ bool USAttributeComponent::IsAlive() const
 	return Health > 0.0f;
 }
 
-bool USAttributeComponent::ApplyHealthChange(float delta)
+bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float delta)
 {
 	float NewHealth = FMath::Clamp(Health + delta, 0.0f, HealthMax);
 	Health = NewHealth;
-	OnHealthChanged.Broadcast(nullptr, this, NewHealth, delta);
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, delta);
 	return true;
 }
 
@@ -56,6 +56,17 @@ USAttributeComponent* USAttributeComponent::GetAttributes(AActor* FromActor)
 	}
 
 	return nullptr;
+}
+
+bool USAttributeComponent::IsActorAlive(AActor* FromActor)
+{
+	USAttributeComponent* AttributeComponent = GetAttributes(FromActor);
+	if(AttributeComponent)
+	{
+		return AttributeComponent->IsAlive();
+	}
+
+	return false;
 }
 
 bool USAttributeComponent::IsFullHealth() const
