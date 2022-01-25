@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SWorldUserWidget.h"
 #include "ActionRoguelike/SAttributeComponent.h"
 #include "GameFramework/Character.h"
 #include "Perception/PawnSensingComponent.h"
@@ -29,11 +30,17 @@ protected:
 	UPawnSensingComponent* PawnSensingComp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 		USAttributeComponent* AttributeComp;
+
+	UPROPERTY(EditDefaultsOnly, Category= "AI")
+		TSubclassOf<UUserWidget> HealthBarWidgetClass;
 	UFUNCTION()
 		void OnPawnSeen(APawn* Pawn);
 
 	UFUNCTION()
 		void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	USWorldUserWidget* ActiveHealthBar;
+
 
 	void SetTargetActor(AActor* NewTarget);
 

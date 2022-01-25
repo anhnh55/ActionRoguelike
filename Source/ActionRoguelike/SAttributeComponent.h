@@ -27,6 +27,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	UFUNCTION(BlueprintCallable)
+		bool Kill(AActor* InstigatorActor);
 
 	UFUNCTION(BlueprintCallable)
 		bool IsAlive() const;

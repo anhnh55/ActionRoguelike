@@ -26,6 +26,11 @@ void USAttributeComponent::BeginPlay()
 	
 }
 
+bool USAttributeComponent::Kill(AActor* InstigatorActor)
+{
+	return ApplyHealthChange(InstigatorActor, -GetHealthMax());
+}
+
 bool USAttributeComponent::IsAlive() const
 {
 	return Health > 0.0f;
@@ -33,6 +38,10 @@ bool USAttributeComponent::IsAlive() const
 
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float delta)
 {
+	if(!GetOwner()->CanBeDamaged())
+	{
+		return false;
+	}
 	float NewHealth = FMath::Clamp(Health + delta, 0.0f, HealthMax);
 	Health = NewHealth;
 	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, delta);

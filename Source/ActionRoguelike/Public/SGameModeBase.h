@@ -19,6 +19,9 @@ public:
 	ASGameModeBase();
 	virtual void StartPlay() override;
 
+	UFUNCTION(Exec)
+		void KillAllAI();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		TSubclassOf<AActor> MinionClass;
