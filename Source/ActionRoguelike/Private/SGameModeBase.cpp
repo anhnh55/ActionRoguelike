@@ -5,6 +5,7 @@
 
 #include "EngineUtils.h"
 #include "ActionRoguelike/SAttributeComponent.h"
+#include "ActionRoguelike/SCharacter.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
@@ -34,13 +35,39 @@ void ASGameModeBase::KillAllAI()
 	}
 }
 
+void ASGameModeBase::OnActorKill(AActor* VictimActor, AActor* Killer)
+{
+	ASCharacter* Player = Cast<ASCharacter>(VictimActor);
+	if(Player)
+	{
+		FTimerHandle TimerHandle_RespawnDelay;
+
+		FTimerDelegate Delegate;
+		Delegate.BindUFunction(this, "RespawnPlayerElapsed", Player->GetController());
+
+		float RespawnDelay = 2.0f;
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("OnActorKilled: Victim %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(Killer));
+}
+
+void ASGameModeBase::RespawnPlayerElapsed(AController* Controller)
+{
+	if(ensure(Controller))
+	{
+		Controller->UnPossess();
+		RestartPlayer(Controller);
+	}
+}
+
 void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance,
                                       EEnvQueryStatus::Type QueryStatus)
 {
 	if(QueryStatus != EEnvQueryStatus::Success)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Spawn bot EQS Query failed"));
-		return;
+		return;  
 	}
 
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
@@ -70,7 +97,7 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 
 	if (DifficultyCurve)
 	{
-	//	MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
+		MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
 	}
 
 	if (NrOfAliveBots >= MaxBotCount)

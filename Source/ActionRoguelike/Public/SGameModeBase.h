@@ -21,8 +21,10 @@ public:
 
 	UFUNCTION(Exec)
 		void KillAllAI();
-
+	virtual void OnActorKill(AActor* VictimActor, AActor* Killer);
 protected:
+	UFUNCTION()
+		void RespawnPlayerElapsed(AController* Controller);
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		TSubclassOf<AActor> MinionClass;
 
