@@ -27,11 +27,14 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 	//		Explode();
 	//	}
 	//}
-
-	if(USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -DamageAmount, SweepResult))
+	if (OtherActor && OtherActor != GetInstigator())
 	{
-		Explode();
+		if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -DamageAmount, SweepResult))
+		{
+			Explode();
+		}
 	}
+	
 }
 
 void ASMagicProjectile::PostInitializeComponents()
