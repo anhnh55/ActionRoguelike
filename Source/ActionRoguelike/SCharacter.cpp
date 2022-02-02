@@ -3,8 +3,10 @@
 
 #include "SCharacter.h"
 #include "DrawDebugHelpers.h"
+#include "SActionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "SActionComponent.h"
 #include "Widgets/Text/ISlateEditableTextWidget.h"
 
 // Sets default values
@@ -26,11 +28,9 @@ ASCharacter::ASCharacter()
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>(TEXT("InteractionComp"));
 
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>(TEXT("AttributeComp"));
-
-	AttackAnimDelay = 0.2f;
+	ActionComp = CreateDefaultSubobject<USActionComponent>(TEXT("ActionComp"));
 
 	TimeToHitParamName = "TimeToHit";
-	HandSocketName = "Muzzle_01";
 }
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
@@ -50,62 +50,6 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
 	}
 }
 
-void ASCharacter::PrimaryAttack_Timelapsed()
-{
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.Instigator = this;
-
-	//cast line from camera
-	
-	//Viewport Size
-	const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
-
-	//Viewport Center!            
-	const FVector2D  ViewportCenter = FVector2D(ViewportSize.X / 2, ViewportSize.Y / 2);
-	FVector ReticleWorldLocation;
-	FVector ReticleWorldDirection;
-	GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(ViewportCenter.X, ViewportCenter.Y, ReticleWorldLocation, ReticleWorldDirection);
-
-	//FVector TraceStart = CameraComp->GetComponentLocation();
-	
-	//FVector TraceEnd = CameraComp->GetComponentLocation() + CameraComp->GetComponentRotation().Vector() * 5000.0f;
-	FVector TraceStart = ReticleWorldLocation;
-	FVector TraceEnd = ReticleWorldLocation + ReticleWorldDirection*1000.0f;
-	
-	FHitResult Hit;
-	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_PhysicsBody);
-
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this);
-	//GetActorEyesViewPoint(CameraLocation, CameraRotation);
-	if(GetWorld()->LineTraceSingleByObjectType(Hit,TraceStart, TraceEnd, ObjectQueryParams, QueryParams))
-	{
-		TraceEnd = Hit.ImpactPoint;
-	}
-	
-
-	FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - HandLocation).Rotator();
-	FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
-
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
-}
-
-void ASCharacter::DashAttack_Timelapsed()
-{
-	SpawnProjectile(DashProjectileClass);
-}
-
-void ASCharacter::BlackHoleAttack_Timelapsed()
-{
-	SpawnProjectile(BlackHoleProjectileClass);
-}
 
 void ASCharacter::PrimaryInteract()
 {
@@ -114,27 +58,31 @@ void ASCharacter::PrimaryInteract()
 
 void ASCharacter::PrimaryAttack()
 {
-	PlayAnimMontage(AttackAnim);
+	/*PlayAnimMontage(AttackAnim);
 	UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_Timelapsed, AttackAnimDelay);
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_Timelapsed, AttackAnimDelay);*/
 
 	//GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
+	ActionComp->StartActionByName(this, "PrimaryAttack");
 }
 
 void ASCharacter::DashAttack()
 {
-	PlayAnimMontage(AttackAnim);
+	/*PlayAnimMontage(AttackAnim);
 	UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
-	GetWorldTimerManager().SetTimer(TimerHandle_DashAttack, this, &ASCharacter::DashAttack_Timelapsed, AttackAnimDelay);
+	GetWorldTimerManager().SetTimer(TimerHandle_DashAttack, this, &ASCharacter::DashAttack_Timelapsed, AttackAnimDelay);*/
 
 	//GetWorldTimerManager().ClearTimer(TimerHandle_PrimaryAttack);
+	ActionComp->StartActionByName(this, "Dash");
 }
 
 void ASCharacter::BlackHoleAttack()
 {
-	PlayAnimMontage(AttackAnim);
+	/*PlayAnimMontage(AttackAnim);
 	UGameplayStatics::SpawnEmitterAttached(CastingEffect, GetMesh(), HandSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget);
-	GetWorldTimerManager().SetTimer(TimerHandle_BlackHoleAttack, this, &ASCharacter::BlackHoleAttack_Timelapsed, AttackAnimDelay);
+	GetWorldTimerManager().SetTimer(TimerHandle_BlackHoleAttack, this, &ASCharacter::BlackHoleAttack_Timelapsed, AttackAnimDelay);*/
+
+	ActionComp->StartActionByName(this, "BlackHole");
 }
 
 void ASCharacter::MoveRight(float value)
@@ -156,62 +104,21 @@ void ASCharacter::MoveForward(float value)
 	AddMovementInput(ControlRot.Vector(), value);
 }
 
+void ASCharacter::SprintStart()
+{
+	ActionComp->StartActionByName(this, "Sprint");
+}
+
+void ASCharacter::SprintStop()
+{
+	ActionComp->StopActionByName(this, "Sprint");
+}
+
 // Called when the game starts or when spawned
 void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-}
-
-void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
-{
-	if (ensureAlways(ClassToSpawn))
-	{
-		FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		SpawnParams.Instigator = this;
-
-		//cast line from camera
-
-		//Viewport Size
-		const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
-
-		//Viewport Center!            
-		const FVector2D  ViewportCenter = FVector2D(ViewportSize.X / 2, ViewportSize.Y / 2);
-		FVector CrosshairWorldLocation;
-		FVector CrosshairWorldDirection;
-		GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(ViewportCenter.X, ViewportCenter.Y, CrosshairWorldLocation, CrosshairWorldDirection);
-
-		UE_LOG(LogTemp, Warning, TEXT("CenterX %f, CenterY %f,  Loc %s, Dir %s"), ViewportCenter.X, ViewportCenter.Y, *CrosshairWorldLocation.ToString(), *CrosshairWorldDirection.ToString());
-		//FVector TraceStart = CameraComp->GetComponentLocation();
-
-		//FVector TraceEnd = CameraComp->GetComponentLocation() + CameraComp->GetComponentRotation().Vector() * 5000.0f;
-		FVector TraceStart = CrosshairWorldLocation;
-		FVector TraceEnd = CrosshairWorldLocation + CrosshairWorldDirection * 1000.0f;
-
-		FHitResult Hit;
-		FCollisionObjectQueryParams ObjectQueryParams;
-		ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-		ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-		ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
-		ObjectQueryParams.AddObjectTypesToQuery(ECC_PhysicsBody);
-
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(this);
-		//GetActorEyesViewPoint(CameraLocation, CameraRotation);
-		if (GetWorld()->LineTraceSingleByObjectType(Hit, TraceStart, TraceEnd, ObjectQueryParams, QueryParams))
-		{
-			TraceEnd = Hit.ImpactPoint;
-		}
-
-
-		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - HandLocation).Rotator();
-		FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
-
-		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
-	}
 }
 
 void ASCharacter::PostInitializeComponents()
@@ -262,6 +169,11 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("BlackHoleAttack", IE_Pressed, this, &ASCharacter::BlackHoleAttack);
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ASCharacter::PrimaryInteract);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ASCharacter::SprintStart);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ASCharacter::SprintStop);
+
+
 }
 
 void ASCharacter::HealSelf(float Amount)
