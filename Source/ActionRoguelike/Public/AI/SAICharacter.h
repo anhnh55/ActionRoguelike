@@ -9,6 +9,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "SAICharacter.generated.h"
 
+class USActionComponent;
 UCLASS()
 class ACTIONROGUELIKE_API ASAICharacter : public ACharacter
 {
@@ -38,6 +39,9 @@ protected:
 
 	UFUNCTION()
 		void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+		USActionComponent* ActionComp;
 
 	USWorldUserWidget* ActiveHealthBar;
 
