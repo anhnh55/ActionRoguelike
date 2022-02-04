@@ -37,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
 		bool IsRunning() const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Action")
+		bool bAutoStart;
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
 		FGameplayTagContainer GrantsTags;
@@ -47,5 +50,5 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 		USActionComponent* GetOwningComponent() const;
 
-	bool isRunning;
+	bool bIsRunning;
 };

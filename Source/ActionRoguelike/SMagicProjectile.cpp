@@ -6,6 +6,7 @@
 #include "SActionComponent.h"
 #include "SAttributeComponent.h"
 #include "SGameplayFunctionLibrary.h"
+#include "SActionEffect.h"
 
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
@@ -18,16 +19,6 @@ ASMagicProjectile::ASMagicProjectile()
 void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Magic Projectile overlap"));
-	//if(OtherActor && OtherActor != GetInstigator())
-	//{
-	//	USAttributeComponent* AttrComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
-	//	if(AttrComp)
-	//	{
-	//		AttrComp->ApplyHealthChange(GetInstigator(), -DamageAmount);
-	//		Explode();
-	//	}
-	//}
 	if (OtherActor && OtherActor != GetInstigator())
 	{
 
@@ -42,6 +33,10 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, -DamageAmount, SweepResult))
 		{
 			Explode();
+			if(ActionComponent)
+			{
+				ActionComponent->AddAction(GetInstigator(), BurningActionClass);
+			}
 		}
 	}
 	

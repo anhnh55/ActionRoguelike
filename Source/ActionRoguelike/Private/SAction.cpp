@@ -10,16 +10,16 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 	USActionComponent* Comp = GetOwningComponent();
 
 	Comp->ActiveGameplayTags.AppendTags(GrantsTags);
-	isRunning = true;
+	bIsRunning = true;
 }
 
 void USAction::StopAction_Implementation(AActor* Instigator)
 {
 	UE_LOG(LogTemp, Log, TEXT("Stopped: %s"), *GetNameSafe(this));
-	ensureAlways(isRunning);
+	ensureAlways(bIsRunning);
 	USActionComponent* Comp = GetOwningComponent();
 	Comp->ActiveGameplayTags.RemoveTags(GrantsTags);
-	isRunning = false;
+	bIsRunning = false;
 }
 
 bool USAction::CanStart_Implementation(AActor* Instigator)
@@ -42,7 +42,7 @@ bool USAction::CanStart_Implementation(AActor* Instigator)
 
 USAction::USAction()
 {
-	isRunning = false;
+	bIsRunning = false;
 }
 
 UWorld* USAction::GetWorld() const
@@ -59,7 +59,7 @@ UWorld* USAction::GetWorld() const
 
 bool USAction::IsRunning() const
 {
-	return isRunning;
+	return bIsRunning;
 }
 
 USActionComponent* USAction::GetOwningComponent() const
