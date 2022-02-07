@@ -43,4 +43,26 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		UCurveFloat* DifficultyCurve;
+
+	// Read/write access as we could change this as our difficulty increases via Blueprint
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
+		int32 CreditsPerKill;
+
+	/* All power-up classes used to spawn with EQS at match start */
+	UPROPERTY(EditDefaultsOnly, Category = "Powerups")
+		TArray<TSubclassOf<AActor>> PowerupClasses;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Powerups")
+		UEnvQuery* PowerupSpawnQuery;
+
+	/* Distance required between power-up spawn locations */
+	UPROPERTY(EditDefaultsOnly, Category = "Powerups")
+		float RequiredPowerupDistance;
+
+	/* Amount of powerups to spawn during match start */
+	UPROPERTY(EditDefaultsOnly, Category = "Powerups")
+		int32 DesiredPowerupCount;
+
+	UFUNCTION()
+		void OnPowerupSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 };
