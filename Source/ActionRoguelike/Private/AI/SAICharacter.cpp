@@ -24,13 +24,41 @@ ASAICharacter::ASAICharacter()
 	ActionComp = CreateDefaultSubobject<USActionComponent>(TEXT("ActionComp"));
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	TimeToHitParamName = "TimeToHit";
+	TargetActorKey = "TargetActor";
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
 }
 
+AActor* ASAICharacter::GetTargetActor() const
+{
+	AAIController* AIC = Cast<AAIController>(GetController());
+	if (AIC)
+	{
+		return Cast<AActor>(AIC->GetBlackboardComponent()->GetValueAsObject(TargetActorKey));
+	}
+
+	return nullptr;
+}
+
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	SetTargetActor(Pawn);
+	UE_LOG(LogTemp, Warning, TEXT("Pawn seen"));
+	// Ignore if target already set
+	if (GetTargetActor() != Pawn)
+	{
+
+		SetTargetActor(Pawn);
+		USWorldUserWidget* NewWidget = CreateWidget<USWorldUserWidget>(GetWorld(), SpottedWidgetClass);
+		UE_LOG(LogTemp, Warning, TEXT("Pawn seen spot check"));
+		if (NewWidget)
+		{
+			NewWidget->AttachedActor = this;
+			// Index of 10 (or anything higher than default of 0) places this on top of any other widget.
+			// May end up behind the minion health bar otherwise.
+			NewWidget->AddToViewport(10);
+			UE_LOG(LogTemp, Warning, TEXT("Pawn seen spot"));
+		}
+	}
 }
 
 void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
@@ -85,7 +113,7 @@ void ASAICharacter::SetTargetActor(AActor* NewTarget)
 	if (AIC)
 	{
 		UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
-		BBComp->SetValueAsObject("TargetActor", NewTarget);
+		BBComp->SetValueAsObject(TargetActorKey, NewTarget);
 		//DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
 	}
 }

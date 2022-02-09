@@ -6,8 +6,11 @@
 #include "Components/ActorComponent.h"
 #include "SAttributeComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, USAttributeComponent*, OwningComp,
-											float, NewHealth, float, Delta);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, USAttributeComponent*, OwningComp,
+	//										float, NewHealth, float, Delta);
+
+// Alternative: Share the same signature with generic names
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnAttributeChanged, AActor*, InstigatorActor, USAttributeComponent*, OwningComp, float, NewValue, float, Delta);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ACTIONROGUELIKE_API USAttributeComponent : public UActorComponent
@@ -23,6 +26,13 @@ protected:
 		float Health;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
 		float HealthMax;
+
+	/* Resource used to power certain Actions */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+		float Rage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+		float RageMax;
+
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
@@ -37,7 +47,7 @@ public:
 	bool ApplyHealthChange(AActor* InstigatorActor, float delta);
 
 	UPROPERTY(BlueprintAssignable)
-		FOnHealthChanged OnHealthChanged;
+		FOnAttributeChanged OnHealthChanged;
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -55,4 +65,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 		float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+		float GetRage() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+		bool ApplyRage(AActor* InstigatorActor, float Delta);
+
+	UPROPERTY(BlueprintAssignable, Category = "Attributes")
+		FOnAttributeChanged OnRageChanged;
 };

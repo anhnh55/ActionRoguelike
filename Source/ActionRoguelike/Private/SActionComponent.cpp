@@ -77,6 +77,19 @@ void USActionComponent::RemoveAction(USAction* ActionToRemove)
 	Actions.Remove(ActionToRemove);
 }
 
+USAction* USActionComponent::GetAction(TSubclassOf<USAction> ActionClass) const
+{
+	for (USAction* Action : Actions)
+	{
+		if (Action && Action->IsA(ActionClass))
+		{
+			return Action;
+		}
+	}
+
+	return nullptr;
+}
+
 
 // Called when the game starts
 void USActionComponent::BeginPlay()

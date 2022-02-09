@@ -18,6 +18,8 @@ USAttributeComponent::USAttributeComponent()
 
 	HealthMax = 100;
 	Health = HealthMax;
+	Rage = 0;
+	RageMax = 100;
 }
 
 
@@ -114,5 +116,25 @@ float USAttributeComponent::GetHealthMax() const
 float USAttributeComponent::GetHealth() const
 {
 	return Health;
+}
+
+float USAttributeComponent::GetRage() const
+{
+	return Rage;
+}
+
+bool USAttributeComponent::ApplyRage(AActor* InstigatorActor, float Delta)
+{
+	float OldRage = Rage;
+
+	Rage = FMath::Clamp(Rage + Delta, 0.0f, RageMax);
+
+	float ActualDelta = Rage - OldRage;
+	if (ActualDelta != 0.0f)
+	{
+		OnRageChanged.Broadcast(InstigatorActor, this, Rage, ActualDelta);
+	}
+
+	return ActualDelta != 0;
 }
 
