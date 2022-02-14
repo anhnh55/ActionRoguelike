@@ -21,10 +21,12 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	void FindBestInteractable();
-
+	
+	UFUNCTION(Server, Reliable)
+		void ServerInteract(AActor* InFocus);
 	UPROPERTY()
 		AActor* FocusedActor;
+	void FindBestInteractable();
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 		TSubclassOf<USWorldUserWidget> DefaultWidgetClass;
@@ -36,6 +38,7 @@ protected:
 		float TraceDistance;
 	UPROPERTY(EditDefaultsOnly, Category = "trace")
 		TEnumAsByte<ECollisionChannel> CollisionChannel;
+	
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
