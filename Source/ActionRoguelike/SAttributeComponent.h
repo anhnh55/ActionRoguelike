@@ -22,9 +22,9 @@ public:
 	USAttributeComponent();
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
 		float Health;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
 		float HealthMax;
 
 	/* Resource used to power certain Actions */
@@ -35,6 +35,9 @@ protected:
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+		void MulticastHealthChanged(AActor* Instigator, float NewHealth, float Delta);
 
 public:
 	UFUNCTION(BlueprintCallable)

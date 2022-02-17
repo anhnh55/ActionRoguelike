@@ -11,7 +11,7 @@ void ASAIController::BeginPlay()
 	Super::BeginPlay();
 
 	RunBehaviorTree(BehaviorTree);
-	APawn* MyPawn = UGameplayStatics::GetPlayerPawn(this, 0);
+	//APawn* MyPawn = UGameplayStatics::GetPlayerPawn(this, 0);
 
 	//if(MyPawn)
 	//{

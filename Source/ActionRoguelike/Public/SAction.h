@@ -40,6 +40,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 		bool bAutoStart;
+
+	void Initialize(USActionComponent* NewActionComponent);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
 		FGameplayTagContainer GrantsTags;
@@ -50,5 +52,13 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 		USActionComponent* GetOwningComponent() const;
 
-	bool bIsRunning;
+	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
+		bool bIsRunning;
+
+	UFUNCTION()
+		void OnRep_IsRunning();
+
+	UPROPERTY(Replicated)
+		USActionComponent* ActionComp; //outer
+	virtual bool IsSupportedForNetworking() const override;
 };
