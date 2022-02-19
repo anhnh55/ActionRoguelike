@@ -60,13 +60,13 @@ void ASGameModeBase::OnActorKill(AActor* VictimActor, AActor* Killer)
 	ASCharacter* Player = Cast<ASCharacter>(VictimActor);
 	if(Player)
 	{
-		//FTimerHandle TimerHandle_RespawnDelay;
+		FTimerHandle TimerHandle_RespawnDelay;
 
-		//FTimerDelegate Delegate;
-		//Delegate.BindUFunction(this, "RespawnPlayerElapsed", Player->GetController());
+		FTimerDelegate Delegate;
+		Delegate.BindUFunction(this, "RespawnPlayerElapsed", Player->GetController());
 
-		//float RespawnDelay = 2.0f;
-		//GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
+		float RespawnDelay = 2.0f;
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
 		// Give Credits for kill
 		
 	}

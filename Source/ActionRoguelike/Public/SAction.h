@@ -8,6 +8,18 @@
 #include "UObject/NoExportTypes.h"
 #include "SAction.generated.h"
 
+
+USTRUCT()
+struct FActionRepData
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY()
+		bool bIsRunning;
+	UPROPERTY()
+		AActor* Instigator;
+};
+
 /**
  * 
  */
@@ -52,11 +64,13 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 		USActionComponent* GetOwningComponent() const;
 
-	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
-		bool bIsRunning;
+	//UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
+	UPROPERTY(ReplicatedUsing="OnRep_RepData")
+		//bool bIsRunning;
+		FActionRepData RepData;
 
 	UFUNCTION()
-		void OnRep_IsRunning();
+		void OnRep_RepData();
 
 	UPROPERTY(Replicated)
 		USActionComponent* ActionComp; //outer
