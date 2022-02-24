@@ -41,6 +41,9 @@ protected:
 	UFUNCTION()
 		void OnPawnSeen(APawn* Pawn);
 
+	UFUNCTION(NetMulticast, Unreliable)
+		void MulticastPawnSeen();
+
 	UFUNCTION()
 		void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
 
@@ -57,5 +60,7 @@ protected:
 	void SetTargetActor(AActor* NewTarget);
 
 	virtual void PostInitializeComponents() override;
+
+
 
 };

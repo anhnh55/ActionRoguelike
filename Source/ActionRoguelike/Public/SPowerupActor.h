@@ -34,7 +34,9 @@ protected:
 	UFUNCTION()
 		void ShowPowerup();
 
+	UPROPERTY(ReplicatedUsing = "OnRep_IsActive")
 	bool bIsActive;
+
 	UPROPERTY(EditAnywhere, Category = "Powerup")
 		float RespawnTime;
 

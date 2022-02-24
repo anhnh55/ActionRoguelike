@@ -48,21 +48,35 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 	{
 
 		SetTargetActor(Pawn);
-		USWorldUserWidget* NewWidget = CreateWidget<USWorldUserWidget>(GetWorld(), SpottedWidgetClass);
+		
+		//USWorldUserWidget* NewWidget = CreateWidget<USWorldUserWidget>(GetWorld(), SpottedWidgetClass);
 		UE_LOG(LogTemp, Warning, TEXT("Pawn seen spot check"));
-		if (NewWidget)
-		{
-			NewWidget->AttachedActor = this;
-			// Index of 10 (or anything higher than default of 0) places this on top of any other widget.
-			// May end up behind the minion health bar otherwise.
-			NewWidget->AddToViewport(10);
-			UE_LOG(LogTemp, Warning, TEXT("Pawn seen spot"));
-		}
+		MulticastPawnSeen();
+		//if (NewWidget)
+		//{
+		//	NewWidget->AttachedActor = this;
+		//	// Index of 10 (or anything higher than default of 0) places this on top of any other widget.
+		//	// May end up behind the minion health bar otherwise.
+		//	NewWidget->AddToViewport(10);
+		//	UE_LOG(LogTemp, Warning, TEXT("Pawn seen spot"));
+		//}
+	}
+}
+
+void ASAICharacter::MulticastPawnSeen_Implementation()
+{
+	USWorldUserWidget* NewWidget = CreateWidget<USWorldUserWidget>(GetWorld(), SpottedWidgetClass);
+	if (NewWidget)
+	{
+		NewWidget->AttachedActor = this;
+		// Index of 10 (or anything higher than default of 0) places this on top of any other widget.
+		// May end up behind the minion health bar otherwise.
+		NewWidget->AddToViewport(10);
 	}
 }
 
 void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
-	float Delta)
+                                    float Delta)
 {
 	if(Delta < 0.0f)
 	{

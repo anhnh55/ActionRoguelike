@@ -28,9 +28,9 @@ protected:
 		float HealthMax;
 
 	/* Resource used to power certain Actions */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
 		float Rage;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category = "Attributes")
 		float RageMax;
 
 	// Called when the game starts
@@ -38,6 +38,9 @@ protected:
 
 	UFUNCTION(NetMulticast, Reliable)
 		void MulticastHealthChanged(AActor* Instigator, float NewHealth, float Delta);
+
+	UFUNCTION(NetMulticast, Unreliable) // Used for cosmetic changes only
+		void MulticastRageChanged(AActor* InstigatorActor, float NewRage, float Delta);
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -51,6 +54,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 		FOnAttributeChanged OnHealthChanged;
+
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

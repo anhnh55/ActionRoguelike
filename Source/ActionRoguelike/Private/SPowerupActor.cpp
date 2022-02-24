@@ -3,6 +3,8 @@
 
 #include "SPowerupActor.h"
 
+#include "Net/UnrealNetwork.h"
+
 // Sets default values
 ASPowerupActor::ASPowerupActor()
 {
@@ -63,4 +65,11 @@ void ASPowerupActor::OnRep_IsActive()
 void ASPowerupActor::ShowPowerup()
 {
 	SetPowerupState(true);
+}
+
+void ASPowerupActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASPowerupActor, bIsActive);
 }
