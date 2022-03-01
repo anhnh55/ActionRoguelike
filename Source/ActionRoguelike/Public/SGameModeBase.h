@@ -8,6 +8,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "SGameModeBase.generated.h"
 
+class USSaveGame;
 /**
  * 
  */
@@ -22,7 +23,14 @@ public:
 	UFUNCTION(Exec)
 		void KillAllAI();
 	virtual void OnActorKill(AActor* VictimActor, AActor* Killer);
+	void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 protected:
+	FString SlotName;
+
+	UPROPERTY()
+	USSaveGame* CurrentSaveGame;
+
 	UFUNCTION()
 		void RespawnPlayerElapsed(AController* Controller);
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
@@ -65,4 +73,9 @@ protected:
 
 	UFUNCTION()
 		void OnPowerupSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+	UFUNCTION(BlueprintCallable, Category = "SaveGame")
+		void WriteSaveGame();
+
+	void LoadSaveGame();
 };
