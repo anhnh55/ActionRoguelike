@@ -34,4 +34,15 @@ protected:
 	// afterwards player state will not change again as PlayerControllers maintain the same player state throughout the level)
 	UPROPERTY(BlueprintAssignable)
 		FOnPlayerStateChanged OnPlayerStateReceived;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+		TSubclassOf<UUserWidget> PauseMenuClass;
+
+	UPROPERTY()
+		UUserWidget* PauseMenuInstance;
+
+	UFUNCTION(BlueprintCallable)
+		void TogglePauseMenu();
+
+	virtual void SetupInputComponent() override;
 };
