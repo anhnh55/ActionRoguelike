@@ -75,4 +75,10 @@ protected:
 	UPROPERTY(Replicated)
 		USActionComponent* ActionComp; //outer
 	virtual bool IsSupportedForNetworking() const override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+		UTexture2D* Icon;
+
+	UPROPERTY(Replicated)
+		float TimeStarted;
 };
