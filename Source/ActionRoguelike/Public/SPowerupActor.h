@@ -45,4 +45,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void Interact_Implementation(APawn* InstigatorPawn);
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
 };
