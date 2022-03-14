@@ -77,7 +77,7 @@ protected:
 	virtual bool IsSupportedForNetworking() const override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-		UTexture2D* Icon;
+		TSoftObjectPtr<UTexture2D> Icon;
 
 	UPROPERTY(Replicated)
 		float TimeStarted;
