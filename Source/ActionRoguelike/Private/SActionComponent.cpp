@@ -136,6 +136,22 @@ void USActionComponent::BeginPlay()
 	
 }
 
+void USActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	//stop all
+	TArray<USAction*> ActionsCopy = Actions;
+
+	for(USAction* Action: ActionsCopy)
+	{
+		if(Action && Action->IsRunning())
+		{
+			Action->StopAction(GetOwner());
+		}
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
 void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
 {
 	StartActionByName(Instigator, ActionName);

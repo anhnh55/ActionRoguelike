@@ -27,6 +27,6 @@ public:
 
 	FPrimaryAssetId GetPrimaryAssetId() const override
 	{
-		return FPrimaryAssetId("Monsters", GetFName());
+		return FPrimaryAssetId("SMonsterData", GetFName());
 	}
 };
